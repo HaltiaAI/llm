@@ -29,7 +29,7 @@ fn main() {
         enable_cublas(build, &out_dir);
     } else if cfg_clblast() {
         enable_clblast(build);
-    } else if cfg!(target_os = "macos") {
+    } else if cfg!(target_os = "macos") || cfg!(target_os = "ios") {
         if cfg_metal() {
             enable_metal(build, &out_dir);
         } else {
@@ -45,6 +45,7 @@ fn main() {
 
             if compiler.is_like_clang() || compiler.is_like_gnu() {
                 build.flag("-pthread");
+                build.flag("-v");
 
                 if features.avx {
                     build.flag("-mavx");
@@ -75,6 +76,7 @@ fn main() {
         }
         "aarch64" => {
             if compiler.is_like_clang() || compiler.is_like_gnu() {
+                build.flag("-v");
                 if std::env::var("HOST") == std::env::var("TARGET") {
                     build.flag("-mcpu=native");
                 } else {
